@@ -1,0 +1,356 @@
+// C-program to demonstrate employer 
+// details using a Doubly-linked list 
+#include <conio.h> 
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <string.h> 
+
+// Global declaration 
+int count = 0;
+
+// Structure declaration 
+struct node { 
+	struct node* prev; 
+	int ssn; 
+	long int phno; 
+	float sal; 
+	char name[20], dept[10], desg[20]; 
+	struct node* next; 
+} * h, *temp, *temp1, *temp2, *temp4; 
+
+// Function to create node 
+void create() 
+{ 
+	int ssn; 
+	long int phno; 
+	float sal; 
+	char name[20], dept[10], desg[20]; 
+	temp = (struct node*)malloc(sizeof(struct node)); 
+	temp->prev = NULL; 
+	temp->next = NULL; 
+	printf("\n enter ssn, name, depart"
+		"ment, designation, salary "
+		"and phno of employee:\n"); 
+	scanf("%d %s %s %s %f %ld", 
+		&ssn, name, dept, desg, 
+		&sal, &phno); 
+	temp->ssn = ssn; 
+	strcpy(temp->name, name); 
+	strcpy(temp->dept, dept); 
+	strcpy(temp->desg, desg); 
+	temp->sal = sal; 
+	temp->phno = phno; 
+	count++; 
+} 
+
+// Function to insert at beginning 
+void insertbeg() 
+{ 
+	// If DLL is empty 
+	if (h == NULL) { 
+		create(); 
+		h = temp; 
+		temp1 = h; 
+	} 
+
+	// Else create a new node and 
+	// update the links 
+	else { 
+		create(); 
+		temp->next = h; 
+		h->prev = temp; 
+		h = temp; 
+	} 
+} 
+
+// Function to insert at end 
+void insertend() 
+{ 
+	// If DLL is empty 
+	if (h == NULL) { 
+		create(); 
+		h = temp; 
+		temp1 = h; 
+	} 
+
+	// Else create a new node and 
+	// update the links 
+	else { 
+		create(); 
+		temp1->next = temp; 
+		temp->prev = temp1; 
+		temp1 = temp; 
+	} 
+} 
+// Function to display from beginning in a tabular form
+// Function to display from beginning in a tabular form
+void displaybeg() {
+    temp2 = h;
+    if (temp2 == NULL) {
+        printf("\nList is empty\n");
+        return;
+    }
+
+    printf("==================================================================================================================\n");
+    printf("SSN\tName\t\tDepartment\tDesignation\tSalary\t\t\tPhone Number\n");
+    printf("==================================================================================================================\n");
+
+    while (temp2 != NULL) {
+        printf("%d\t%s\t\t%s\t\t%s\t\t%.2f\t\t%10ld\n",
+               temp2->ssn, temp2->name, temp2->dept, temp2->desg, temp2->sal, temp2->phno);
+        temp2 = temp2->next;
+    }
+
+    printf("==================================================================================================================\n");
+    // Print the count
+    printf("Number of employees: %d\n", count);
+}
+
+// Function to delete at end 
+int deleteend() 
+{ 
+	struct node* temp; 
+	temp = h; 
+	if (temp == NULL) { 
+		printf("list is empty\n"); 
+		return 0; 
+	} 
+	if (temp->next == NULL) { 
+		printf("%d %s %s %s %f %ld\n", 
+			temp->ssn, temp->name, 
+			temp->dept, temp->desg, 
+			temp->sal, temp->phno); 
+		free(temp); 
+		h = NULL; 
+	} 
+	else { 
+		temp = temp1; 
+		temp2 = temp1->prev; 
+		temp2->next = NULL; 
+		printf("%d %s %s %s %f %ld\n", 
+			temp->ssn, temp->name, 
+			temp->dept, temp->desg, 
+			temp->sal, temp->phno); 
+		free(temp); 
+		temp1 = temp2; 
+	} 
+	count--; 
+	return 0; 
+} 
+
+// Function to delete from beginning 
+int deletebeg() 
+{ 
+	struct node* temp; 
+	temp = h; 
+	if (temp == NULL) { 
+		printf("list is empty\n"); 
+		return 0; 
+	} 
+	if (temp->next == NULL) { 
+		printf("%d %s %s %s %f %ld\n", 
+			temp->ssn, temp->name, 
+			temp->dept, temp->desg, 
+			temp->sal, temp->phno); 
+		free(temp); 
+		h = NULL; 
+	} 
+	else { 
+		h = h->next; 
+		h->prev = NULL; 
+		printf("%d %s %s %s %f %ld\n", 
+			temp->ssn, temp->name, 
+			temp->dept, temp->desg, 
+			temp->sal, temp->phno); 
+		free(temp); 
+	} 
+	count--; 
+	return 0; 
+} 
+
+void listEmployeesInDepartment(char department[]) {
+    temp2 = h;
+    int found = 0;
+
+    if (temp2 == NULL) {
+        printf("The list is empty.\n");
+        return;
+    }
+
+    printf("Employees in department '%s':\n", department);
+    
+    while (temp2 != NULL) {
+        if (strcmp(temp2->dept, department) == 0) {
+            found = 1;
+            printf("%d %s %s %s %f %ld\n",
+                   temp2->ssn, temp2->name, temp2->dept,
+                   temp2->desg, temp2->sal, temp2->phno);
+        }
+        temp2 = temp2->next;
+    }
+
+    if (!found) {
+        printf("No employees found in the '%s' department.\n", department);
+    }
+}
+void sortEmployeesBySalary() {
+    struct node* current;
+    struct node* next;
+    int swapped;
+    float temp;
+
+    if (h == NULL) {
+        printf("The list is empty.\n");
+        return;
+    }
+
+    do {
+        swapped = 0;
+        current = h;
+
+        while (current->next != NULL) {
+            next = current->next;
+            if (current->sal < next->sal) {
+                // Swap the data fields
+                temp = current->sal;
+                current->sal = next->sal;
+                next->sal = temp;
+                swapped = 1;
+            }
+            current = current->next;
+        }
+    } while (swapped);
+}
+
+// Function to display sorted employees by salary in descending order
+void displaySortedBySalary() {
+    sortEmployeesBySalary();
+    displaybeg();
+}
+
+void promoteEmployee() {
+    if (h == NULL || h->next == NULL) {
+        printf("Insufficient employees for promotion.\n");
+        return;
+    }
+
+    struct node *current, *maxSalaryNode, *prev, *nextNode;
+    float maxSalary = h->sal; // Assume the first employee has the highest salary initially
+
+    current = h->next;
+    maxSalaryNode = h;
+    prev = NULL;
+
+    // Traverse the list to find the employee with the highest salary
+    while (current != NULL) {
+        if (current->sal > maxSalary) {
+            maxSalary = current->sal;
+            maxSalaryNode = current;
+            prev = temp1;
+        }
+        temp1 = current;
+        current = current->next;
+    }
+
+    if (maxSalaryNode == h) {
+        // If the employee with the highest salary is already at the beginning, no need to promote
+		 printf("Employee with SSN %d promoted successfully.\n", maxSalaryNode->ssn);
+	     printf("%s is promoted",maxSalaryNode->name);
+       
+        return;
+    }
+
+    // Adjust pointers to promote the employee
+    if (prev != NULL) {
+        prev->next = maxSalaryNode->next;
+        if (maxSalaryNode->next != NULL) {
+            maxSalaryNode->next->prev = prev;
+        }
+    }
+
+    maxSalaryNode->prev = NULL;
+    maxSalaryNode->next = h;
+    h->prev = maxSalaryNode;
+    h = maxSalaryNode;
+
+    printf("Employee with SSN %d promoted successfully.\n", maxSalaryNode->ssn);
+	printf("%s is promoted",maxSalaryNode->name);
+}
+
+// Function displaying menus 
+void employerDetails() 
+{ 
+	int ch, n, i; 
+	char department[10];
+	h = NULL; 
+	temp = temp1 = NULL; 
+	printf("--------Menu------------\n"); 
+	printf("\n 1.Create a DLL of n employees"); 
+	printf("\n 2.Display"); 
+	printf("\n 3.Insert at end"); 
+	printf("\n 4.Delete at end"); 
+	printf("\n 5.Insert at beginning"); 
+	printf("\n 6.Delete at beginning"); 
+	printf("\n 7.List employees in a department");
+	printf("\n 8.Sort employees according to salary");
+	printf("\n 9.Promotion");
+	printf("\n 10.exit\n"); 
+	printf("----------------------\n"); 
+	while (1) { 
+		printf("\n enter choice : "); 
+		scanf("%d", &ch); 
+
+		// Switch statements begins 
+		switch (ch) { 
+		case 1: 
+			printf("\n enter number of"
+				" employees:"); 
+			scanf("%d", &n); 
+			for (i = 0; i < n; i++) 
+				insertend(); 
+			break; 
+		case 2: 
+			displaybeg(); 
+			break; 
+		case 3: 
+			insertend(); 
+			break; 
+		case 4: 
+			deleteend(); 
+			break; 
+		case 5: 
+			insertbeg(); 
+			break; 
+		case 6: 
+			deletebeg(); 
+			break; 
+		
+		case 7:
+		    printf("Enter the department to list employees: ");
+            scanf("%s", department);
+            listEmployeesInDepartment(department);
+           break;
+		case 8:
+		printf("The employees sorted according to salary");
+		displaySortedBySalary();
+		break;
+		case 9:
+		promoteEmployee();
+		break;
+		case 10: 
+			exit(0); 
+
+		default: 
+			printf("wrong choice\n"); 
+		} 
+	} 
+} 
+
+// Driver Code 
+int main() 
+{ 
+	// Function Call 
+	employerDetails(); 
+
+	return 0; 
+}
